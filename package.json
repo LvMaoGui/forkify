@@ -9,8 +9,14 @@
   "devDependencies": {
     "@parcel/transformer-sass": "^2.8.3",
     "parcel": "^2.0.0-beta.1",
-    "sass": "^1.26.10"
+    "process": "^0.11.10",
+    "sass": "^1.62.1"
   },
   "author": "codeFly",
-  "license": "ISC"
+  "license": "ISC",
+  "dependencies": {
+    "core-js": "^3.6.5",
+    "fractional": "^1.0.0",
+    "regenerator-runtime": "^0.13.7"
+  }
 }
