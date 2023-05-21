@@ -30,7 +30,7 @@ const showRecipe = async function() {
       image: recipe.image_url,
       servings: recipe.servings,
       cookingTime: recipe.cooking_time,
-      ingredingts: recipe.ingredints
+      ingredients: recipe.ingredients
     }
   }catch(error){
     console.error(error.message)
