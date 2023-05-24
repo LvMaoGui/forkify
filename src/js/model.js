@@ -1,21 +1,24 @@
-import { API_URL } from "./config";
-import { getJSON } from "./helpers";
+import { API_URL } from './config';
+import { getJSON } from './helpers';
 
 const state = {
   recipe: {},
+  search: {
+    query: '',
+    result: [],
+  },
 };
 
 /**
  * 加载配方
  *  将数据存入state
  * @param {string} id 配方id
- *
  */
 const loadRecope = async id => {
-  try{
+  try {
     console.log(`${API_URL}/${id}`);
-    const data = await getJSON(`${API_URL}/${id}`)
-  
+    const data = await getJSON(`${API_URL}/${id}`);
+
     let { recipe } = data.data;
     state.recipe = {
       id: recipe.id,
@@ -28,10 +31,27 @@ const loadRecope = async id => {
       ingredients: recipe.ingredients,
     };
     console.log(state.recipe);
-  } catch(error){
-    console.error(error.message)
+  } catch (error) {
+    console.error(error.message);
+    throw error;
   }
- 
 };
 
-export { state, loadRecope };
+const loadSearchResults = async query => {
+  try {
+    state.search.query = query
+    const data = await getJSON(`${API_URL}?search=${query}`);
+    state.search.result = data.data.recipes.map(rec => {
+      return {
+        id: rec.id,
+        title: rec.title,
+        publisher: rec.publisher,
+        image: rec.image_url,
+      };
+    });
+  } catch (error) {
+    console.error(error.message);
+    throw error;
+  }
+};
+export { state, loadRecope, loadSearchResults };

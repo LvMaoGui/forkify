@@ -1,5 +1,6 @@
 import * as model from './model';
 import recipeView from './views/recipeView';
+import searchView from './views/searchView';
 
 
 import 'core-js/stable';
@@ -10,9 +11,6 @@ const recipeContainer = document.querySelector('.recipe');
 
 
 // https://forkify-api.herokuapp.com/v2
-
-///////////////////////////////////////
-
 
 const controlRecipes = async function () {
   try {
@@ -28,10 +26,30 @@ const controlRecipes = async function () {
 
     recipeView.render(recipe)
   } catch (error) {
-    console.error(error.message);
+    recipeView.renderMessage()
   }
 };
 
+const controlSearchResults = async function(){
+  try{
+    // 1.获取查询信息
+    const query = searchView.getQuery()
+    if(!query) return
+    // 2.根据查询信息请求数据并存入model的state中
+    await model.loadSearchResults(query)
+    // 3.渲染结果
+    console.log(model.state.search.result)
+
+  }catch(error){
+    console.error(error.message)
+  }
+}
+controlSearchResults()
+
 // 为窗体的哈希值变化与加载事件 注册监听
-['hashchange','load'].forEach(ev => window.addEventListener(ev,controlRecipes))
+const init = function(){
+  recipeView.addHandlerRender(controlRecipes)
+  searchView.addHandlerSearch(controlSearchResults)
+}
+init()
 

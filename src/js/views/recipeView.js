@@ -3,6 +3,8 @@ import { Fraction } from 'fractional';
 console.log(Fraction);
 class RecipeView {
   #parentElement = document.querySelector('.recipe');
+  #errorMessage = '我们无法找到这个食谱，请尝试搜索其他食谱！'
+  #message = ''
 
   render(data) {
     this._data = data;
@@ -10,6 +12,40 @@ class RecipeView {
     // 将容器中的内容清空
     this.#clear();
     // 将html脚本插入容器中进行渲染
+    this.#parentElement.insertAdjacentHTML('afterbegin', markup);
+  }
+
+  addHandlerRender(handler) {
+    ['hashchange', 'load'].forEach(ev => window.addEventListener(ev, handler));
+  }
+
+  renderError(message = this.#errorMessage) {
+    const markup = `
+      <div class="error">
+        <div>
+          <svg>
+            <use href="${icons}#icon-alert-triangle"></use>
+          </svg>
+        </div>
+        <p>${message}</p>
+      </div>
+    `;
+    this.#clear();
+    this.#parentElement.insertAdjacentHTML('afterbegin', markup);
+  }
+
+  renderMessage(message = this.#message) {
+    const markup = `
+      <div class="message">
+        <div>
+          <svg>
+            <use href="${icons}#icon-smile"></use>
+          </svg>
+        </div>
+        <p>${message}</p>
+      </div>
+    `;
+    this.#clear();
     this.#parentElement.insertAdjacentHTML('afterbegin', markup);
   }
 
@@ -74,7 +110,9 @@ class RecipeView {
     <div class="recipe__ingredients">
       <h2 class="heading--2">Recipe ingredients</h2>
       <ul class="recipe__ingredient-list">
-        ${this._data.ingredients.map((Ing) => this.#generateMarkupIngredients(Ing)).join('')}
+        ${this._data.ingredients
+          .map(Ing => this.#generateMarkupIngredients(Ing))
+          .join('')}
       </ul>
     </div>
 
@@ -108,7 +146,9 @@ class RecipeView {
           <use href="${icons}#icon-check"></use>
         </svg>
         <div class="recipe__quantity">${
-          ingredient.quantity ? new Fraction(ingredient.quantity).toString() : ''
+          ingredient.quantity
+            ? new Fraction(ingredient.quantity).toString()
+            : ''
         }</div>
         <div class="recipe__description">
           <span class="recipe__unit">${ingredient.unit}</span>
