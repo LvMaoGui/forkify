@@ -1,59 +1,17 @@
+import View from './view';
 import icons from 'url:../../img/icons.svg'; // parcel v2
 import { Fraction } from 'fractional';
 console.log(Fraction);
-class RecipeView {
-  #parentElement = document.querySelector('.recipe');
-  #errorMessage = '我们无法找到这个食谱，请尝试搜索其他食谱！'
-  #message = ''
+class RecipeView extends View {
+  _parentElement = document.querySelector('.recipe');
+  _errorMessage = '我们无法找到这个食谱，请尝试搜索其他食谱！'
+  _message = ''
 
-  render(data) {
-    this._data = data;
-    const markup = this.#generateMarkup();
-    // 将容器中的内容清空
-    this.#clear();
-    // 将html脚本插入容器中进行渲染
-    this.#parentElement.insertAdjacentHTML('afterbegin', markup);
+  _clear() {
+    this._parentElement.innerHTML = '';
   }
 
-  addHandlerRender(handler) {
-    ['hashchange', 'load'].forEach(ev => window.addEventListener(ev, handler));
-  }
-
-  renderError(message = this.#errorMessage) {
-    const markup = `
-      <div class="error">
-        <div>
-          <svg>
-            <use href="${icons}#icon-alert-triangle"></use>
-          </svg>
-        </div>
-        <p>${message}</p>
-      </div>
-    `;
-    this.#clear();
-    this.#parentElement.insertAdjacentHTML('afterbegin', markup);
-  }
-
-  renderMessage(message = this.#message) {
-    const markup = `
-      <div class="message">
-        <div>
-          <svg>
-            <use href="${icons}#icon-smile"></use>
-          </svg>
-        </div>
-        <p>${message}</p>
-      </div>
-    `;
-    this.#clear();
-    this.#parentElement.insertAdjacentHTML('afterbegin', markup);
-  }
-
-  #clear() {
-    this.#parentElement.innerHTML = '';
-  }
-
-  #generateMarkup() {
+  _generateMarkup() {
     return `
     <figure class="recipe__fig">
       <img src="${this._data.image}" alt="Tomato" class="recipe__img" />
@@ -111,7 +69,7 @@ class RecipeView {
       <h2 class="heading--2">Recipe ingredients</h2>
       <ul class="recipe__ingredient-list">
         ${this._data.ingredients
-          .map(Ing => this.#generateMarkupIngredients(Ing))
+          .map(Ing => this._generateMarkupIngredients(Ing))
           .join('')}
       </ul>
     </div>
@@ -139,7 +97,7 @@ class RecipeView {
   `;
   }
 
-  #generateMarkupIngredients(ingredient) {
+  _generateMarkupIngredients(ingredient) {
     return `
       <li class="recipe__ingredient">
         <svg class="recipe__icon">
@@ -157,18 +115,7 @@ class RecipeView {
       </li>`;
   }
 
-  renderSpinner() {
-    const markup = `
-      <div class="spinner">
-        <svg>
-          <use href="${icons}#icon-loader"></use>
-        </svg>
-      </div>
-    `;
-    // 先清空内容
-    this.#clear();
-    this.#parentElement.insertAdjacentHTML('afterbegin', markup);
-  }
+
 }
 
 export default new RecipeView();
