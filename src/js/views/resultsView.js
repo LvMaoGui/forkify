@@ -6,10 +6,6 @@ class ResultsView extends View{
   _errorMessage = '没有找到你查找的食谱，请重试'
   _message = ''
 
-  _clear(){
-    this._parentElement.innerHTML = ''
-  }
-
   _generateMarkup(){
     const markup = this._data.map(this._generateMarkupPreview).join('');
     return markup

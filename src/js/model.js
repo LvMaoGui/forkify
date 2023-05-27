@@ -1,11 +1,14 @@
 import { API_URL } from './config';
 import { getJSON } from './helpers';
+import { RES_PER_PAGE } from './config';
 
 const state = {
   recipe: {},
   search: {
     query: '',
     result: [],
+    page : 1,
+    resultsPerPage : RES_PER_PAGE
   },
 };
 
@@ -41,7 +44,7 @@ const loadSearchResults = async query => {
   try {
     state.search.query = query
     const data = await getJSON(`${API_URL}?search=${query}`);
-    state.search.result = data.data.recipes.map(rec => {
+    state.search.results = data.data.recipes.map(rec => {
       return {
         id: rec.id,
         title: rec.title,
@@ -54,4 +57,16 @@ const loadSearchResults = async query => {
     throw error;
   }
 };
-export { state, loadRecope, loadSearchResults };
+
+/**
+ * 获取搜索结果页面
+ * @param {*} page 
+ */
+const getSearchResultsPage = function(page = state.search.page){
+  state.search.page = page
+  const start = (page -1) * state.search.resultsPerPage;
+  const end = page * state.search.resultsPerPage;
+  console.log(state.search.results.slice(start, end));
+  return state.search.results.slice(start, end);
+}
+export { state, loadRecope, loadSearchResults, getSearchResultsPage };

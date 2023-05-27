@@ -3,6 +3,7 @@ import icons from 'url:../../img/icons.svg'; // parcel v2
 class View {
   _data;
   render(data) {
+    debugger
     if(!data || (Array.isArray(data) && data.length === 0)) return this.renderError()
 
     this._data = data;
@@ -15,6 +16,10 @@ class View {
 
   addHandlerRender(handler) {
     ['hashchange', 'load'].forEach(ev => window.addEventListener(ev, handler));
+  }
+
+  _clear(){
+    this._parentElement.innerHTML = '';
   }
 
   renderError(message = this._errorMessage) {

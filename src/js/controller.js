@@ -2,6 +2,7 @@ import * as model from './model';
 import recipeView from './views/recipeView';
 import searchView from './views/searchView';
 import resultsView from './views/resultsView';
+import paginationView from './views/paginationView';
 
 
 import 'core-js/stable';
@@ -44,19 +45,28 @@ const controlSearchResults = async function(){
     await model.loadSearchResults(query)
     // 3.渲染结果
     console.log(model.state.search.result)
-    resultsView.render(model.state.search.result)
+    resultsView.render(model.getSearchResultsPage())
 
-
+    // 4.渲染初始分页按钮
+    paginationView.render(model.state.search)
   }catch(error){
     console.error(error.message)
   }
 }
 controlSearchResults()
 
+const controlPagination = function(goToPage){
+  // 1.渲染新的结果
+  resultsView.render(model.getSearchResultsPage(goToPage))
+  // 4.渲染新的分页按钮
+  paginationView.render(model.state.search)
+}
+
 // 为窗体的哈希值变化与加载事件 注册监听
 const init = function(){
   recipeView.addHandlerRender(controlRecipes)
   searchView.addHandlerSearch(controlSearchResults)
+  paginationView.addHandlerClick(controlPagination)
 }
 init()
 

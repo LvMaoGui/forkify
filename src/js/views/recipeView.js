@@ -7,10 +7,6 @@ class RecipeView extends View {
   _errorMessage = '我们无法找到这个食谱，请尝试搜索其他食谱！'
   _message = ''
 
-  _clear() {
-    this._parentElement.innerHTML = '';
-  }
-
   _generateMarkup() {
     return `
     <figure class="recipe__fig">
