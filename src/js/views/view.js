@@ -3,8 +3,9 @@ import icons from 'url:../../img/icons.svg'; // parcel v2
 class View {
   _data;
   render(data) {
-    debugger
-    if(!data || (Array.isArray(data) && data.length === 0)) return this.renderError()
+    debugger;
+    if (!data || (Array.isArray(data) && data.length === 0))
+      return this.renderError();
 
     this._data = data;
     const markup = this._generateMarkup();
@@ -14,11 +15,36 @@ class View {
     this._parentElement.insertAdjacentHTML('afterbegin', markup);
   }
 
-  addHandlerRender(handler) {
-    ['hashchange', 'load'].forEach(ev => window.addEventListener(ev, handler));
+  update(data) {
+    if (!data || (Array.isArray(data) && data.length === 0))
+      return this.renderError();
+
+    this._data = data;
+    const newMarkup = this._generateMarkup();
+
+    const newDOM = document.createRange().createContextualFragment(newMarkup);
+    const newElements = Array.from(newDOM.querySelectorAll('*'));
+    const curElements = Array.from(this._parentElement.querySelectorAll('*'));
+
+    newElements.forEach((newEl, i) => {
+      const curEl = curElements[i];
+      // 更新发生变化的文本
+      if (
+        !newEl.isEqualNode(curEl) &&
+        newEl.firstChild?.nodeValue.trim() !== ''
+      ) {
+        curEl.textContent = newEl.textContent;
+      }
+      // 更新发生变化的属性
+      if (!newEl.isEqualNode(curEl)) {
+        Array.from(newEl.attributes).forEach(attr =>
+          curEl.setAttribute(attr.name, attr.value)
+        );
+      }
+    });
   }
 
-  _clear(){
+  _clear() {
     this._parentElement.innerHTML = '';
   }
 
@@ -51,7 +77,7 @@ class View {
     this._clear();
     this._parentElement.insertAdjacentHTML('afterbegin', markup);
   }
-  
+
   renderSpinner() {
     const markup = `
       <div class="spinner">
@@ -66,4 +92,4 @@ class View {
   }
 }
 
-export default View
+export default View;

@@ -69,4 +69,15 @@ const getSearchResultsPage = function(page = state.search.page){
   console.log(state.search.results.slice(start, end));
   return state.search.results.slice(start, end);
 }
-export { state, loadRecope, loadSearchResults, getSearchResultsPage };
+
+const updateServings = function(newServings){
+  debugger
+  state.recipe.ingredients.forEach(ing => {
+    // 新的数量 = 旧的数量 * 新的份数 / 旧的份数
+    ing.quantity = ing.quantity * newServings / state.recipe.servings
+  })
+
+  state.recipe.servings = newServings
+}
+
+export { state, loadRecope, loadSearchResults, getSearchResultsPage, updateServings };

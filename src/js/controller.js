@@ -23,6 +23,8 @@ const controlRecipes = async function () {
     const id = window.location.hash.slice(1);
     if(!id) return;
     recipeView.renderSpinner() 
+
+    resultsView.update(model.getSearchResultsPage())
     // 1.加载配方
     await model.loadRecope(id)
     console.log(model.state.recipe)
@@ -62,9 +64,18 @@ const controlPagination = function(goToPage){
   paginationView.render(model.state.search)
 }
 
+const controlServings = function(newServings){
+  // 1.更新用餐人数到状态
+  model.updateServings(newServings)
+  // 2.更新食谱视图
+  // recipeView.render(model.state.recipe)
+  recipeView.update(model.state.recipe)
+}
+
 // 为窗体的哈希值变化与加载事件 注册监听
 const init = function(){
   recipeView.addHandlerRender(controlRecipes)
+  recipeView.addHandlerUpdateServings(controlServings)
   searchView.addHandlerSearch(controlSearchResults)
   paginationView.addHandlerClick(controlPagination)
 }

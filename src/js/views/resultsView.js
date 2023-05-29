@@ -1,20 +1,21 @@
 import View from './view';
 import icons from 'url:../../img/icons.svg'; // parcel v2
 
-class ResultsView extends View{
-  _parentElement = document.querySelector('.results')
-  _errorMessage = '没有找到你查找的食谱，请重试'
-  _message = ''
+class ResultsView extends View {
+  _parentElement = document.querySelector('.results');
+  _errorMessage = '没有找到你查找的食谱，请重试';
+  _message = '';
 
-  _generateMarkup(){
+  _generateMarkup() {
     const markup = this._data.map(this._generateMarkupPreview).join('');
-    return markup
+    return markup;
   }
 
-  _generateMarkupPreview(result){
+  _generateMarkupPreview(result) {
+    const id  = window.location.hash.slice(1);
     return `
       <li class="preview">
-        <a class="preview__link preview__link--active" href="#${result.id}">
+        <a class="preview__link ${result.id === id ? "preview__link--active" : ''}" href="#${result.id}">
           <figure class="preview__fig">
             <img src="${result.image}" alt="${result.title}" />
           </figure>
@@ -29,8 +30,8 @@ class ResultsView extends View{
           </div>
         </a>
       </li>
-    `
+    `;
   }
 }
 
-export default new ResultsView()
+export default new ResultsView();
