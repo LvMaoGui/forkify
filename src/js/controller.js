@@ -4,10 +4,8 @@ import searchView from './views/searchView';
 import resultsView from './views/resultsView';
 import paginationView from './views/paginationView';
 
-
 import 'core-js/stable';
 import 'regenerator-runtime/runtime';
-
 
 const recipeContainer = document.querySelector('.recipe');
 
@@ -21,63 +19,72 @@ const controlRecipes = async function () {
   try {
     // 获取地址中的哈希值
     const id = window.location.hash.slice(1);
-    if(!id) return;
-    recipeView.renderSpinner() 
+    if (!id) return;
+    recipeView.renderSpinner();
 
-    resultsView.update(model.getSearchResultsPage())
+    resultsView.update(model.getSearchResultsPage());
     // 1.加载配方
-    await model.loadRecope(id)
-    console.log(model.state.recipe)
-    const { recipe } = model.state
+    await model.loadRecipe(id);
+    console.log(model.state.recipe);
+    const { recipe } = model.state;
     // 2.渲染配方
 
-    recipeView.render(recipe)
+    recipeView.render(recipe);
   } catch (error) {
-    recipeView.renderMessage()
+    recipeView.renderMessage();
   }
 };
 
-const controlSearchResults = async function(){
-  try{
+const controlSearchResults = async function () {
+  try {
     // 1.获取查询信息
-    const query = searchView.getQuery()
-    if(!query) return
-    resultsView.renderSpinner()
+    const query = searchView.getQuery();
+    if (!query) return;
+    resultsView.renderSpinner();
     // 2.根据查询信息请求数据并存入model的state中
-    await model.loadSearchResults(query)
+    await model.loadSearchResults(query);
     // 3.渲染结果
-    console.log(model.state.search.result)
-    resultsView.render(model.getSearchResultsPage())
+    console.log(model.state.search.result);
+    resultsView.render(model.getSearchResultsPage());
 
     // 4.渲染初始分页按钮
-    paginationView.render(model.state.search)
-  }catch(error){
-    console.error(error.message)
+    paginationView.render(model.state.search);
+  } catch (error) {
+    console.error(error.message);
   }
-}
-controlSearchResults()
+};
 
-const controlPagination = function(goToPage){
+const controlPagination = function (goToPage) {
   // 1.渲染新的结果
-  resultsView.render(model.getSearchResultsPage(goToPage))
+  resultsView.render(model.getSearchResultsPage(goToPage));
   // 4.渲染新的分页按钮
-  paginationView.render(model.state.search)
-}
+  paginationView.render(model.state.search);
+};
 
-const controlServings = function(newServings){
+const controlServings = function (newServings) {
   // 1.更新用餐人数到状态
-  model.updateServings(newServings)
+  model.updateServings(newServings);
   // 2.更新食谱视图
   // recipeView.render(model.state.recipe)
-  recipeView.update(model.state.recipe)
-}
+  recipeView.update(model.state.recipe);
+};
+
+const controlAddBookmark = function () {
+  if (!model.state.recipe.bookmarked) {
+    model.addBookmark(model.state.recipe);
+  } else {
+    model.deleteBookmark(model.state.recipe.id);
+  }
+
+  recipeView.update(model.state.recipe);
+};
 
 // 为窗体的哈希值变化与加载事件 注册监听
-const init = function(){
-  recipeView.addHandlerRender(controlRecipes)
-  recipeView.addHandlerUpdateServings(controlServings)
-  searchView.addHandlerSearch(controlSearchResults)
-  paginationView.addHandlerClick(controlPagination)
-}
-init()
-
+const init = function () {
+  recipeView.addHandlerRender(controlRecipes);
+  recipeView.addHandlerUpdateServings(controlServings);
+  recipeView.addHandlerBookmark(controlAddBookmark);
+  searchView.addHandlerSearch(controlSearchResults);
+  paginationView.addHandlerClick(controlPagination);
+};
+init();
