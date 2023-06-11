@@ -2,6 +2,7 @@ import * as model from './model';
 import recipeView from './views/recipeView';
 import searchView from './views/searchView';
 import resultsView from './views/resultsView';
+import bookmarksView from './views/bookmarksView';
 import paginationView from './views/paginationView';
 
 import 'core-js/stable';
@@ -23,6 +24,7 @@ const controlRecipes = async function () {
     recipeView.renderSpinner();
 
     resultsView.update(model.getSearchResultsPage());
+    bookmarksView.update(model.state.bookmarks)
     // 1.加载配方
     await model.loadRecipe(id);
     console.log(model.state.recipe);
@@ -70,13 +72,18 @@ const controlServings = function (newServings) {
 };
 
 const controlAddBookmark = function () {
+  // 1.添加/删除 收藏
   if (!model.state.recipe.bookmarked) {
     model.addBookmark(model.state.recipe);
   } else {
     model.deleteBookmark(model.state.recipe.id);
   }
 
+  // 2.更新食谱视图
   recipeView.update(model.state.recipe);
+
+  //3.渲染到收藏食谱视图
+  bookmarksView.render(model.state.bookmarks)
 };
 
 // 为窗体的哈希值变化与加载事件 注册监听

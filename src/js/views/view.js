@@ -2,13 +2,17 @@ import icons from 'url:../../img/icons.svg'; // parcel v2
 
 class View {
   _data;
-  render(data) {
+  render(data, render = true) {
     debugger;
     if (!data || (Array.isArray(data) && data.length === 0))
       return this.renderError();
 
     this._data = data;
     const markup = this._generateMarkup();
+
+    if(!render){
+      return markup;
+    }
     // 将容器中的内容清空
     this._clear();
     // 将html脚本插入容器中进行渲染
