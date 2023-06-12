@@ -22,15 +22,14 @@ const controlRecipes = async function () {
     const id = window.location.hash.slice(1);
     if (!id) return;
     recipeView.renderSpinner();
-
     resultsView.update(model.getSearchResultsPage());
-    bookmarksView.update(model.state.bookmarks)
+    bookmarksView.update(model.state.bookmarks);
+
     // 1.加载配方
     await model.loadRecipe(id);
     console.log(model.state.recipe);
     const { recipe } = model.state;
     // 2.渲染配方
-
     recipeView.render(recipe);
   } catch (error) {
     recipeView.renderMessage();
@@ -83,11 +82,16 @@ const controlAddBookmark = function () {
   recipeView.update(model.state.recipe);
 
   //3.渲染到收藏食谱视图
-  bookmarksView.render(model.state.bookmarks)
+  bookmarksView.render(model.state.bookmarks);
+};
+
+const controlBookmarks = function () {
+  bookmarksView.render(model.state.bookmarks);
 };
 
 // 为窗体的哈希值变化与加载事件 注册监听
 const init = function () {
+  bookmarksView.addHandlerRender(controlBookmarks);
   recipeView.addHandlerRender(controlRecipes);
   recipeView.addHandlerUpdateServings(controlServings);
   recipeView.addHandlerBookmark(controlAddBookmark);
