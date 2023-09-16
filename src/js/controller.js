@@ -4,6 +4,8 @@ import searchView from './views/searchView';
 import resultsView from './views/resultsView';
 import bookmarksView from './views/bookmarksView';
 import paginationView from './views/paginationView';
+import addRecipeView from './views/addRecipeView';
+import { MODAL_CLOSE_SEC } from './config';
 
 import 'core-js/stable';
 import 'regenerator-runtime/runtime';
@@ -89,6 +91,39 @@ const controlBookmarks = function () {
   bookmarksView.render(model.state.bookmarks);
 };
 
+const controlAddRecipe = async function (newRepice) {
+  try{
+    // 食谱收藏栏显示加载中
+    addRecipeView.renderSpinner()
+
+    await model.uploadRecipe(newRepice)
+    console.log(model.state.recipe)
+
+    // 渲染食谱
+    recipeView.render(model.state.recipe);
+
+    // 提示新增食谱成功
+    addRecipeView.renderMessage()
+
+    // 渲染收藏食谱视图
+    bookmarksView.render(model.state.bookmarks)
+
+    // 更新id到url的hash值中
+    window.history.pushState(null, '',  `#${model.state.recipe.id}`);
+    
+
+    // 关闭模态窗
+    setTimeout(() => {
+      addRecipeView.toggleWindow()
+    }, MODAL_CLOSE_SEC * 1000);
+
+  }catch(error){
+    console.error(error)
+    addRecipeView.renderError(error.message)
+  }
+
+};
+
 // 为窗体的哈希值变化与加载事件 注册监听
 const init = function () {
   bookmarksView.addHandlerRender(controlBookmarks);
@@ -97,5 +132,6 @@ const init = function () {
   recipeView.addHandlerBookmark(controlAddBookmark);
   searchView.addHandlerSearch(controlSearchResults);
   paginationView.addHandlerClick(controlPagination);
+  addRecipeView.addHandlerUpload(controlAddRecipe)
 };
 init();
